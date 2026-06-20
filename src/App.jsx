@@ -1,7 +1,11 @@
+// App.jsx - To'liq yangilangan versiya
+// Barcha marshrutlar va menyu sahifasi qo'shilgan
+
 import { Routes, Route, Navigate } from "react-router-dom";
-import Login      from "./pages/Login";
+import Login from "./pages/Login";
 import SuperAdmin from "./pages/SuperAdmin";
 import WaiterPanel from "./pages/WaiterPanel";
+import MenuPage from "./pages/MenuPage"; // ⭐ Yangi menyu sahifasi
 
 // ─── Shared storage helper ────────────────────────────────────────────────────
 // Login → localStorage ga yozadi (tab yopilsa ham qoladi)
@@ -38,11 +42,26 @@ function PrivateRoute({ element, allowedRoles }) {
   return element;
 }
 
+// ─── PublicRoute ──────────────────────────────────────────────────────────────
+// Menyu sahifasi uchun - parolsiz kirish
+function PublicRoute({ element }) {
+  return element;
+}
+
 // ─── App ──────────────────────────────────────────────────────────────────────
 export default function App() {
   return (
     <Routes>
+      {/* ─── LOGIN ───────────────────────────────────────────────────────── */}
       <Route path="/" element={<Login />} />
+
+      {/* ─── MENU PAGE (PUBLIC - PAROLSIZ) ─────────────────────────────── */}
+      <Route
+        path="/menu"
+        element={<PublicRoute element={<MenuPage />} />}
+      />
+
+      {/* ─── SUPER ADMIN PANEL ──────────────────────────────────────────── */}
       <Route
         path="/superadmin"
         element={
@@ -52,6 +71,8 @@ export default function App() {
           />
         }
       />
+
+      {/* ─── ADMIN PANEL (SuperAdmin bilan bir xil) ────────────────────── */}
       <Route
         path="/admin"
         element={
@@ -61,6 +82,8 @@ export default function App() {
           />
         }
       />
+
+      {/* ─── WAITER PANEL ────────────────────────────────────────────────── */}
       <Route
         path="/waiter"
         element={
@@ -70,6 +93,8 @@ export default function App() {
           />
         }
       />
+
+      {/* ─── NOT FOUND ───────────────────────────────────────────────────── */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
