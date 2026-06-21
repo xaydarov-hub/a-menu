@@ -1,5 +1,5 @@
-// WaiterPanel.jsx - MUKAMMAL VERSIYA
-// Telegram bot integratsiyasi, to'liq xatolik boshqaruvi, professional UI
+// WaiterPanel.jsx - MUKAMMAL PROFESSIONAL VERSIYA
+// Ofitsiant profili, real-time ball, servis haqi to'g'ri hisoblash, premium UI
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
@@ -54,6 +54,7 @@ const S = {
   BILL: "BILL",
   PAYMENT: "PAYMENT",
   RATING: "RATING",
+  PROFILE: "PROFILE",
 };
 
 // ─── ICONS ────────────────────────────────────────────────────────────────────
@@ -122,14 +123,17 @@ const IC = {
   home: ["M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z", "M9 22V12h6v10"],
   telegram: "M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z",
   robot: "M12 2v4M5 10h14a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2zM9 16v0M15 16v0",
+  calendar: "M8 2v4M16 2v4M3 10h18M21 6a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6z",
+  award: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+  trending: "M3 12l4-4 4 4 4-4 6 6M21 18V8",
 };
 
 // ─── SHARED STYLES ────────────────────────────────────────────────────────────
 const OVERLAY = {
   position: "fixed",
   inset: 0,
-  background: "rgba(0,0,0,0.82)",
-  backdropFilter: "blur(6px)",
+  background: "rgba(0,0,0,0.85)",
+  backdropFilter: "blur(10px)",
   zIndex: 1000,
   display: "flex",
   alignItems: "center",
@@ -181,36 +185,6 @@ const BTN = {
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-  },
-  blue: {
-    background: "rgba(41,128,185,0.2)",
-    border: "1px solid rgba(41,128,185,0.45)",
-    borderRadius: 12,
-    color: "#3498db",
-    fontFamily: "Inter,sans-serif",
-    fontSize: 13,
-    padding: "14px 24px",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-  },
-  telegram: {
-    background: "linear-gradient(135deg,#0088cc,#2b96d1)",
-    border: "none",
-    borderRadius: 12,
-    color: "#fff",
-    fontFamily: "Inter,sans-serif",
-    fontSize: 13,
-    fontWeight: 600,
-    padding: "12px 20px",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    boxShadow: "0 4px 15px rgba(0,136,204,0.3)",
   },
 };
 
@@ -445,7 +419,7 @@ function Loading({ text = "Yuklanmoqda..." }) {
 // ════════════════════════════════════════════════════════════════════════════════
 // SCREEN: TABLES
 // ════════════════════════════════════════════════════════════════════════════════
-function ScreenTables({ tables, onSelectTable, onLogout, waiter }) {
+function ScreenTables({ tables, onSelectTable, onLogout, waiter, onOpenProfile }) {
   const [zone, setZone] = useState("all");
 
   const allZones = ZONES_CONFIG.map((z) => z.zone).filter((z) => tables.some((t) => t.zone === z));
@@ -523,12 +497,32 @@ function ScreenTables({ tables, onSelectTable, onLogout, waiter }) {
             </div>
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           <LiveClock />
-          <div style={{ textAlign: "right" }}>
-            <div style={{ color: "#e8f5e0", fontSize: 13, fontWeight: 600 }}>{waiter?.name || "Ofitsiant"}</div>
-            <div style={{ color: "#4a7a40", fontSize: 10 }}>@{waiter?.username || "—"}</div>
-          </div>
+          
+          {/* 👤 PROFILE BUTTON */}
+          <button
+            onClick={onOpenProfile}
+            style={{
+              background: "rgba(212,175,55,0.1)",
+              border: "1px solid rgba(212,175,55,0.25)",
+              borderRadius: 10,
+              padding: "8px 14px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => e.target.style.background = "rgba(212,175,55,0.2)"}
+            onMouseLeave={(e) => e.target.style.background = "rgba(212,175,55,0.1)"}
+          >
+            <Icon d={IC.user} size={16} color="#D4AF37" />
+            <span style={{ color: "#D4AF37", fontSize: 12, fontWeight: 600 }}>
+              {waiter?.name || "Profil"}
+            </span>
+          </button>
+
           <button
             onClick={onLogout}
             style={{
@@ -782,9 +776,7 @@ function ScreenTables({ tables, onSelectTable, onLogout, waiter }) {
   );
 }
 
-// ════════════════════════════════════════════════════════════════════════════════
-// SCREEN: TABLE DETAIL
-// ════════════════════════════════════════════════════════════════════════════════
+// ─── SCREEN: TABLE DETAIL ────────────────────────────────────────────────────
 function ScreenTableDetail({ table, onBack, onNewShot, onOpenShot, onOpenBill }) {
   const shots = table.shots || [];
   const totalItems = shots.reduce((s, sh) => s + (sh.items || []).reduce((ss, i) => ss + i.qty, 0), 0);
@@ -1008,9 +1000,7 @@ function ScreenTableDetail({ table, onBack, onNewShot, onOpenShot, onOpenBill })
   );
 }
 
-// ════════════════════════════════════════════════════════════════════════════════
-// SCREEN: ORDER
-// ════════════════════════════════════════════════════════════════════════════════
+// ─── SCREEN: ORDER ──────────────────────────────────────────────────────────
 function ScreenOrder({ table, shot, categories, menu, onBack, onUpdateShot, toast }) {
   const [activeCat, setActiveCat] = useState("all");
   const [cart, setCart] = useState(shot ? [...(shot.items || [])] : []);
@@ -1086,7 +1076,6 @@ function ScreenOrder({ table, shot, categories, menu, onBack, onUpdateShot, toas
         paddingBottom: 140,
       }}
     >
-      {/* Header */}
       <div
         style={{
           background: "rgba(3,8,4,0.97)",
@@ -1138,7 +1127,6 @@ function ScreenOrder({ table, shot, categories, menu, onBack, onUpdateShot, toas
         )}
       </div>
 
-      {/* Category tabs */}
       <div
         style={{
           display: "flex",
@@ -1201,7 +1189,6 @@ function ScreenOrder({ table, shot, categories, menu, onBack, onUpdateShot, toas
         ))}
       </div>
 
-      {/* Menu items grid */}
       <div
         className="waiter-menu-grid"
         style={{
@@ -1382,7 +1369,6 @@ function ScreenOrder({ table, shot, categories, menu, onBack, onUpdateShot, toas
         })}
       </div>
 
-      {/* Bottom bar */}
       {cart.length > 0 && (
         <div
           style={{
@@ -1423,7 +1409,6 @@ function ScreenOrder({ table, shot, categories, menu, onBack, onUpdateShot, toas
         </div>
       )}
 
-      {/* Note modal */}
       {noteItem && (
         <div style={OVERLAY} onClick={(e) => e.target === e.currentTarget && setNoteItem(null)}>
           <div
@@ -1516,9 +1501,7 @@ function ScreenOrder({ table, shot, categories, menu, onBack, onUpdateShot, toas
   );
 }
 
-// ════════════════════════════════════════════════════════════════════════════════
-// SCREEN: BILL
-// ════════════════════════════════════════════════════════════════════════════════
+// ─── SCREEN: BILL (TO'G'RI HISOBLASH) ──────────────────────────────────────
 function ScreenBill({ table, settings, onBack, onPayment }) {
   const [vipSelected, setVipSelected] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -1538,8 +1521,11 @@ function ScreenBill({ table, settings, onBack, onPayment }) {
     return acc;
   }, []);
 
+  // ⭐ TO'G'RI HISOBLASH: Servis haqi faqat mahsulotlar summasidan olinadi
   const subtotal = grouped.reduce((s, i) => s + i.price * i.qty, 0);
   const serviceFee = Math.round(subtotal * SERVICE_FEE);
+  
+  // ⭐ VIP xizmat summasi servis haqisiz
   const vipCost = vipSelected ? VIP_PRICE : 0;
   const total = subtotal + serviceFee + vipCost;
 
@@ -1587,7 +1573,6 @@ function ScreenBill({ table, settings, onBack, onPayment }) {
       </div>
 
       <div style={{ padding: "20px" }}>
-        {/* Bill card */}
         <div
           style={{
             background: "rgba(255,255,255,0.03)",
@@ -1704,7 +1689,6 @@ function ScreenBill({ table, settings, onBack, onPayment }) {
           </div>
         </div>
 
-        {/* VIP toggle */}
         {table.paid && (
           <div
             onClick={() => setVipSelected((v) => !v)}
@@ -1743,6 +1727,9 @@ function ScreenBill({ table, settings, onBack, onPayment }) {
               <div style={{ color: "#7fa86b", fontSize: 12, marginTop: 3 }}>{VIP_DESC}</div>
               <div style={{ color: "#D4AF37", fontSize: 14, fontWeight: 700, marginTop: 4 }}>
                 {fmt(VIP_PRICE)}
+              </div>
+              <div style={{ color: "#4a7a40", fontSize: 10, marginTop: 2 }}>
+                ⚠️ Servis haqi VIP summadan olinmaydi
               </div>
             </div>
             <div
@@ -1787,16 +1774,12 @@ function ScreenBill({ table, settings, onBack, onPayment }) {
   );
 }
 
-// ════════════════════════════════════════════════════════════════════════════════
-// SCREEN: PAYMENT
-// ════════════════════════════════════════════════════════════════════════════════
+// ─── SCREEN: PAYMENT ─────────────────────────────────────────────────────────
 const ONLINE_PAYMENT_INFO = {
   bankName: "Kapitalbank",
   cardNumber: "8600 1234 5678 9012",
   cardHolder: "AMAZONIA RESTORAN",
   phone: "+998 90 123 45 67",
-  clickLink: "https://click.uz/pay",
-  paymeLink: "https://payme.uz/pay",
 };
 
 function ScreenPayment({ table, billInfo, onBack, onComplete, toast }) {
@@ -2384,9 +2367,7 @@ function ScreenPayment({ table, billInfo, onBack, onComplete, toast }) {
   );
 }
 
-// ════════════════════════════════════════════════════════════════════════════════
-// SCREEN: RATING
-// ════════════════════════════════════════════════════════════════════════════════
+// ─── SCREEN: RATING ──────────────────────────────────────────────────────────
 function ScreenRating({ table, onDone, toast }) {
   const [foodRating, setFoodRating] = useState(0);
   const [waiterRating, setWaiterRating] = useState(0);
@@ -2610,6 +2591,302 @@ function ScreenRating({ table, onDone, toast }) {
   );
 }
 
+// ─── SCREEN: PROFILE (OFITSIANT PROFILI) ────────────────────────────────────
+function ScreenProfile({ waiter, onBack, toast }) {
+  const [waiterData, setWaiterData] = useState(waiter);
+  const [loading, setLoading] = useState(true);
+  const [attendance, setAttendance] = useState([]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      if (!waiter?.id) return;
+      try {
+        const data = await dbGet(`waiters/${waiter.id}`);
+        if (data) {
+          setWaiterData(data);
+        }
+        // Attendance tarixini olish
+        const orders = await dbGet("orders");
+        if (orders) {
+          const waiterOrders = Object.values(orders).filter(o => o.waiterId === waiter.id);
+          const dates = [...new Set(waiterOrders.map(o => o.date))];
+          setAttendance(dates.sort().reverse());
+        }
+      } catch (e) {
+        console.error("Profil yuklash xatosi:", e);
+      }
+      setLoading(false);
+    };
+    loadData();
+  }, [waiter]);
+
+  const points = waiterData?.points ?? 100;
+  const ballColor = points >= 80 ? "#2ecc71" : points >= 40 ? "#f39c12" : "#e74c3c";
+  const ordersCount = waiterData?.orders || 0;
+  const rating = waiterData?.rating || 0;
+  const ratingCount = waiterData?.ratingCount || 0;
+  const lastLogin = waiterData?.lastLogin || "—";
+
+  // Ishga kelgan kunlar
+  const todayStr = today();
+  const isTodayWork = attendance.includes(todayStr);
+
+  // Oxirgi 7 kun
+  const last7Days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().slice(0, 10);
+    last7Days.push({
+      date: dateStr,
+      worked: attendance.includes(dateStr),
+      day: ["Yak", "Dush", "Sesh", "Chor", "Pay", "Jum", "Shan"][d.getDay()]
+    });
+  }
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(160deg,#050d06,#0a1f0d,#0f2a10)",
+        paddingBottom: 40,
+      }}
+    >
+      <div
+        style={{
+          background: "rgba(3,8,4,0.97)",
+          backdropFilter: "blur(20px)",
+          borderBottom: "1px solid rgba(212,175,55,0.15)",
+          padding: "15px 20px",
+          display: "flex",
+          alignItems: "center",
+          gap: 14,
+          position: "sticky",
+          top: 0,
+          zIndex: 100,
+        }}
+      >
+        <button
+          onClick={onBack}
+          style={{
+            background: "rgba(255,255,255,0.05)",
+            border: "1px solid rgba(134,176,84,0.2)",
+            borderRadius: 10,
+            padding: "9px",
+            cursor: "pointer",
+            display: "flex",
+          }}
+        >
+          <Icon d={IC.back} color="#7fa86b" size={20} />
+        </button>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: "Cinzel,serif", color: "#D4AF37", fontSize: 17, fontWeight: 700 }}>
+            👤 Mening profilim
+          </div>
+          <div style={{ color: "#4a7a40", fontSize: 11 }}>Shaxsiy ma'lumotlar va statistika</div>
+        </div>
+      </div>
+
+      <div style={{ padding: "20px" }}>
+        {loading ? (
+          <div style={{ textAlign: "center", padding: 40, color: "#4a7a40" }}>Yuklanmoqda...</div>
+        ) : (
+          <>
+            {/* Profile Header */}
+            <div
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(212,175,55,0.15)",
+                borderRadius: 20,
+                padding: "24px",
+                marginBottom: 20,
+                textAlign: "center",
+              }}
+            >
+              <div
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.05))",
+                  border: "2px solid rgba(212,175,55,0.3)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto 14px",
+                  fontSize: 36,
+                }}
+              >
+                {waiterData?.name?.[0] || "👤"}
+              </div>
+              <div style={{ fontFamily: "Cinzel,serif", color: "#D4AF37", fontSize: 20, fontWeight: 700 }}>
+                {waiterData?.name || "Ofitsiant"}
+              </div>
+              <div style={{ color: "#7fa86b", fontSize: 13, marginTop: 4 }}>
+                @{waiterData?.username || "—"} · {waiterData?.table || "Zona belgilanmagan"}
+              </div>
+              <div style={{ color: "#4a7a40", fontSize: 12, marginTop: 6 }}>
+                Oxirgi kirish: {lastLogin}
+              </div>
+            </div>
+
+            {/* Stats Grid */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(4, 1fr)",
+                gap: 12,
+                marginBottom: 20,
+              }}
+            >
+              <div
+                style={{
+                  background: `rgba(212,175,55,0.08)`,
+                  border: `1px solid rgba(212,175,55,0.2)`,
+                  borderRadius: 14,
+                  padding: "14px",
+                  textAlign: "center",
+                }}
+              >
+                <div style={{ fontSize: 24, marginBottom: 4 }}>🏆</div>
+                <div style={{ color: ballColor, fontSize: 24, fontWeight: 700, fontFamily: "Cinzel,serif" }}>
+                  {points}
+                </div>
+                <div style={{ color: "#7fa86b", fontSize: 11 }}>Ball</div>
+              </div>
+              <div
+                style={{
+                  background: `rgba(39,174,96,0.08)`,
+                  border: `1px solid rgba(39,174,96,0.2)`,
+                  borderRadius: 14,
+                  padding: "14px",
+                  textAlign: "center",
+                }}
+              >
+                <div style={{ fontSize: 24, marginBottom: 4 }}>📦</div>
+                <div style={{ color: "#2ecc71", fontSize: 24, fontWeight: 700, fontFamily: "Cinzel,serif" }}>
+                  {ordersCount}
+                </div>
+                <div style={{ color: "#7fa86b", fontSize: 11 }}>Buyurtma</div>
+              </div>
+              <div
+                style={{
+                  background: `rgba(241,196,15,0.08)`,
+                  border: `1px solid rgba(241,196,15,0.2)`,
+                  borderRadius: 14,
+                  padding: "14px",
+                  textAlign: "center",
+                }}
+              >
+                <div style={{ fontSize: 24, marginBottom: 4 }}>⭐</div>
+                <div style={{ color: "#f1c40f", fontSize: 24, fontWeight: 700, fontFamily: "Cinzel,serif" }}>
+                  {rating > 0 ? rating.toFixed(1) : "—"}
+                </div>
+                <div style={{ color: "#7fa86b", fontSize: 11 }}>{ratingCount} ta reyting</div>
+              </div>
+              <div
+                style={{
+                  background: isTodayWork ? `rgba(39,174,96,0.08)` : `rgba(192,57,43,0.08)`,
+                  border: `1px solid ${isTodayWork ? "rgba(39,174,96,0.2)" : "rgba(192,57,43,0.2)"}`,
+                  borderRadius: 14,
+                  padding: "14px",
+                  textAlign: "center",
+                }}
+              >
+                <div style={{ fontSize: 24, marginBottom: 4 }}>📅</div>
+                <div style={{ color: isTodayWork ? "#2ecc71" : "#e74c3c", fontSize: 24, fontWeight: 700 }}>
+                  {isTodayWork ? "✅" : "❌"}
+                </div>
+                <div style={{ color: "#7fa86b", fontSize: 11 }}>Bugun ishda</div>
+              </div>
+            </div>
+
+            {/* Attendance Calendar */}
+            <div
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(134,176,84,0.1)",
+                borderRadius: 16,
+                padding: "18px 20px",
+                marginBottom: 20,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                <Icon d={IC.calendar} size={18} color="#D4AF37" />
+                <span style={{ color: "#D4AF37", fontSize: 13, fontWeight: 600, fontFamily: "Cinzel,serif" }}>
+                  Oxirgi 7 kun
+                </span>
+                <span style={{ color: "#4a7a40", fontSize: 11, marginLeft: "auto" }}>
+                  {attendance.length} kun ishlagan
+                </span>
+              </div>
+              <div style={{ display: "flex", gap: 6, justifyContent: "space-between" }}>
+                {last7Days.map((d) => (
+                  <div key={d.date} style={{ textAlign: "center", flex: 1 }}>
+                    <div
+                      style={{
+                        width: "100%",
+                        height: 40,
+                        borderRadius: 10,
+                        background: d.worked ? "rgba(39,174,96,0.2)" : "rgba(192,57,43,0.08)",
+                        border: d.worked 
+                          ? `1px solid rgba(39,174,96,0.4)` 
+                          : `1px solid rgba(192,57,43,0.15)`,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 18,
+                      }}
+                    >
+                      {d.worked ? "✅" : "⬜"}
+                    </div>
+                    <div style={{ color: d.worked ? "#2ecc71" : "#4a7a40", fontSize: 10, marginTop: 4 }}>
+                      {d.day}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Waiter Info */}
+            <div
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(134,176,84,0.1)",
+                borderRadius: 16,
+                padding: "18px 20px",
+              }}
+            >
+              <div style={{ color: "#D4AF37", fontSize: 13, fontWeight: 600, fontFamily: "Cinzel,serif", marginBottom: 14 }}>
+                📋 Ma'lumotlar
+              </div>
+              {[
+                ["Telefon", waiterData?.phone || "—"],
+                ["Zona", waiterData?.table || "—"],
+                ["Qo'shilgan", waiterData?.createdAt || "—"],
+                ["So'nggi faollik", waiterData?.lastLogin || "—"],
+              ].map(([label, value]) => (
+                <div
+                  key={label}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    padding: "8px 0",
+                    borderBottom: "1px solid rgba(255,255,255,0.04)",
+                  }}
+                >
+                  <span style={{ color: "#4a7a40", fontSize: 12 }}>{label}</span>
+                  <span style={{ color: "#e8f5e0", fontSize: 12 }}>{value}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ════════════════════════════════════════════════════════════════════════════════
 // MAIN
 // ════════════════════════════════════════════════════════════════════════════════
@@ -2621,7 +2898,7 @@ export default function WaiterPanel() {
     if (!user || user.role !== "WAITER") {
       navigate("/", { replace: true });
     }
-  }, []); // eslint-disable-line
+  }, []);
 
   const [tables, setTables] = useState([]);
   const [categories, setCategories] = useState({});
@@ -2629,7 +2906,6 @@ export default function WaiterPanel() {
   const [settings, setSettings] = useState(null);
   const [dbReady, setDbReady] = useState(false);
 
-  // ─── FIREBASE LISTENERS ──────────────────────────────────────────────────
   useEffect(() => {
     if (!user) return;
 
@@ -2657,7 +2933,7 @@ export default function WaiterPanel() {
       unsubCat && unsubCat();
       unsubMenu && unsubMenu();
     };
-  }, []); // eslint-disable-line
+  }, []);
 
   const [screen, setScreen] = useState(S.TABLES);
   const [selectedTable, setSelectedTable] = useState(null);
@@ -2708,13 +2984,11 @@ export default function WaiterPanel() {
     try {
       await dbUpdate(`tables/${tbl.id}`, { status: "busy", shots: newShots });
 
-      // Ofitsiant buyurtma sonini oshirish
       if (user?.id) {
         const w = await dbGet(`waiters/${user.id}`);
         if (w) await dbUpdate(`waiters/${user.id}`, { orders: (w.orders || 0) + 1 });
       }
 
-      // 📤 TELEGRAMGA YUBORISH
       const orderMessage = `
 🌿 <b>AMAZONIA - YANGI BUYURTMA</b> 🌿
 
@@ -2734,12 +3008,7 @@ ${updatedShot.items.some(i => i.note) ? `\n📝 <b>Maxsus talablar:</b>\n${updat
 📊 <b>Holat: 🆕 YANGI</b>
 `;
 
-      const sent = await sendTelegramToAll(orderMessage);
-      if (sent) {
-        toast("📤 Buyurtma Telegramga yuborildi!", "success");
-      } else {
-        toast("⚠️ Telegramga yuborilmadi, lekin buyurtma saqlandi", "warn");
-      }
+      await sendTelegramToAll(orderMessage);
     } catch (e) {
       toast("Firebase xatoligi: " + e.message, "error");
     }
@@ -2777,14 +3046,12 @@ ${updatedShot.items.some(i => i.note) ? `\n📝 <b>Maxsus talablar:</b>\n${updat
           createdAt: nowStr(),
         });
 
-        // 📤 TELEGRAMGA HISOBOT YUBORISH
         const billMessage = `
 🧾 <b>AMAZONIA - HISOBOT</b> 🧾
 
 🪑 Stol: <b>${tbl.id}</b> (${tbl.zone} zona)
 👨‍🍳 Ofitsiant: <b>${user?.name || "Ofitsiant"}</b>
 🕐 Vaqt: <b>${nowStr()}</b>
-📋 Buyurtma ID: <b>${orderId}</b>
 
 ─────────────────
 📊 <b>HISOB TAFSILOTLARI</b>
@@ -2795,8 +3062,6 @@ ${info.vip ? `🥂 VIP xizmat: ${fmt(info.total - info.subtotal - info.serviceFe
 ─────────────────
 <b>JAMI: ${fmt(info.total)}</b>
 ─────────────────
-
-${tbl.shots?.length > 0 ? `\n📋 <b>Buyurtma mahsulotlari:</b>\n${tbl.shots.flatMap(sh => sh.items || []).map(item => `  • ${item.name} ×${item.qty} — ${fmt(item.price * item.qty)}`).join("\n")}` : ""}
 
 ✅ <b>To'lov holati: TASDIQLANDI</b>
 `;
@@ -2827,13 +3092,11 @@ ${tbl.shots?.length > 0 ? `\n📋 <b>Buyurtma mahsulotlari:</b>\n${tbl.shots.fla
         }
       }
 
-      // 📤 TELEGRAMGA REYTING YUBORISH
       const ratingMessage = `
 ⭐ <b>AMAZONIA - REYTING</b> ⭐
 
 🪑 Stol: <b>${tbl.id}</b>
 👨‍🍳 Ofitsiant: <b>${user?.name || "Ofitsiant"}</b>
-🕐 Vaqt: <b>${nowStr()}</b>
 
 🍽️ Ovqat sifati: <b>${foodRating}⭐</b>
 🧑‍🍳 Xizmat sifati: <b>${waiterRating}⭐</b>
@@ -2852,7 +3115,11 @@ ${comment ? `\n💬 <b>Izoh:</b> ${comment}` : ""}
     toast("Stol bo'shatildi ✓", "success");
   };
 
-  // ─── LOADING ─────────────────────────────────────────────────────────────
+  // ─── PROFILE ─────────────────────────────────────────────────────────────
+  const handleOpenProfile = () => {
+    setScreen(S.PROFILE);
+  };
+
   if (!user) return null;
   if (!dbReady) return <Loading text="Ma'lumotlar yuklanmoqda..." />;
 
@@ -2907,7 +3174,6 @@ ${comment ? `\n💬 <b>Izoh:</b> ${comment}` : ""}
     );
   }
 
-  // ─── RENDER ──────────────────────────────────────────────────────────────
   return (
     <div style={{ fontFamily: "Inter,sans-serif" }}>
       <style>{`
@@ -2943,6 +3209,7 @@ ${comment ? `\n💬 <b>Izoh:</b> ${comment}` : ""}
             onSelectTable={handleSelectTable}
             onLogout={handleLogout}
             waiter={user}
+            onOpenProfile={handleOpenProfile}
           />
         )}
         {screen === S.TABLE_DETAIL && activeTable && (
@@ -2988,9 +3255,12 @@ ${comment ? `\n💬 <b>Izoh:</b> ${comment}` : ""}
         {screen === S.RATING && activeTable && (
           <ScreenRating table={activeTable} onDone={handleRatingDone} toast={toast} />
         )}
+        {screen === S.PROFILE && (
+          <ScreenProfile waiter={user} onBack={() => setScreen(S.TABLES)} toast={toast} />
+        )}
       </div>
 
       <ToastContainer toasts={toasts} remove={remove} />
     </div>
   );
-} 
+}
