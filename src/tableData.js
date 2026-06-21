@@ -17,10 +17,11 @@ import { dbGet, dbSet, dbListen } from "./firebase";
    ════════════════════════════════════════════════════════════════════════ */
 
 export const ZONES_CONFIG = [
-  { zone: "Garden",   prefix: "G", count: 10, capacity: 4 },
+  { zone: "Garden",   prefix: "G", count: 13, capacity: 4 },
   { zone: "Amazonia", prefix: "A", count: 10, capacity: 4 },
-  { zone: "Terassa",  prefix: "T", count: 8,  capacity: 4 },
-  { zone: "Basseyn",  prefix: "B", count: 6,  capacity: 6, paid: true, priceTag: "Bisetka" },
+  { zone: "Terassa",  prefix: "T", count: 12,  capacity: 4 },
+  { zone: "Basseyn",  prefix: "B", count: 7,  capacity: 6, paid: true, priceTag: "Bisetka" },
+  { zone: "Basseyn",  prefix: "B", count: 13,  capacity: 6, paid: true, priceTag: "Tekin" },
 ];
 
 /* ════════════════════════════════════════════════════════════════════════
