@@ -1,15 +1,12 @@
-// App.jsx - To'liq yangilangan versiya
-// Barcha marshrutlar va menyu sahifasi qo'shilgan
-
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import SuperAdmin from "./pages/SuperAdmin";
 import WaiterPanel from "./pages/WaiterPanel";
-import MenuPage from "./pages/MenuPage"; // ⭐ Yangi menyu sahifasi
+import MenuPage from "./pages/MenuPage";
+import NookMenu from "./pages/NookMenu"; // ⭐ YANGI - Nook Menu
+import NotFound from "./NotFound";
 
 // ─── Shared storage helper ────────────────────────────────────────────────────
-// Login → localStorage ga yozadi (tab yopilsa ham qoladi)
-// Bu helper ikki joydan ham o'qiydi (migration uchun)
 export function getStoredUser() {
   try {
     return (
@@ -43,7 +40,6 @@ function PrivateRoute({ element, allowedRoles }) {
 }
 
 // ─── PublicRoute ──────────────────────────────────────────────────────────────
-// Menyu sahifasi uchun - parolsiz kirish
 function PublicRoute({ element }) {
   return element;
 }
@@ -61,6 +57,12 @@ export default function App() {
         element={<PublicRoute element={<MenuPage />} />}
       />
 
+      {/* ─── NOOK MENU (PUBLIC - PAROLSIZ) ────────────────────────────── */}
+      <Route
+        path="/nook"
+        element={<PublicRoute element={<NookMenu />} />}
+      />
+
       {/* ─── SUPER ADMIN PANEL ──────────────────────────────────────────── */}
       <Route
         path="/superadmin"
@@ -72,7 +74,7 @@ export default function App() {
         }
       />
 
-      {/* ─── ADMIN PANEL (SuperAdmin bilan bir xil) ────────────────────── */}
+      {/* ─── ADMIN PANEL ────────────────────────────────────────────────── */}
       <Route
         path="/admin"
         element={
@@ -94,8 +96,8 @@ export default function App() {
         }
       />
 
-      {/* ─── NOT FOUND ───────────────────────────────────────────────────── */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* ─── 404 NOT FOUND ────────────────────────────────────────────────── */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

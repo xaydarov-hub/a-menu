@@ -1,8 +1,8 @@
 // Login.jsx - Yangilangan versiya
-// Menyu sahifasiga parolsiz kirish qo'shilgan
+// Menyu va Nook Menu sahifalariga parolsiz kirish qo'shilgan
 
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom"; // ⭐ Link qo'shildi
+import { useNavigate, Link } from "react-router-dom";
 import { dbGet, dbUpdate } from "../firebase";
 import { getStoredUser, storeUser } from "../App";
 
@@ -73,6 +73,19 @@ const SpinnerIcon = () => (
     animation: "spin 0.7s linear infinite",
     display: "inline-block",
   }} />
+);
+
+// ─── BOOK ICON ──────────────────────────────────────────────────────────────
+const BookIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+    stroke="#D4AF37" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 6h16v14H4z" />
+    <path d="M4 6v14" />
+    <path d="M8 2v4" />
+    <path d="M16 2v4" />
+    <path d="M12 8v8" />
+    <path d="M8 12h8" />
+  </svg>
 );
 
 // ─── MAIN LOGIN ───────────────────────────────────────────────────────────────
@@ -270,6 +283,16 @@ export default function Login() {
           0% { background-position: -200% center; }
           100% { background-position: 200% center; }
         }
+        @keyframes bookFloat {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-4px) rotate(2deg); }
+        }
+        .menu-link-item {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .menu-link-item:hover {
+          transform: translateY(-2px) scale(1.01);
+        }
       `}</style>
 
       {/* Ambient */}
@@ -371,18 +394,18 @@ export default function Login() {
           <span style={S.menuDividerText}>YOKI</span>
         </div>
 
+        {/* ─── Premium Menu Link ────────────────────────────────────────── */}
         <Link
           to="/menu"
+          className="menu-link-item"
           style={S.menuLink}
           onMouseEnter={(e) => {
             e.target.style.background = "rgba(212,175,55,0.2)";
             e.target.style.borderColor = "rgba(212,175,55,0.5)";
-            e.target.style.transform = "scale(1.02)";
           }}
           onMouseLeave={(e) => {
             e.target.style.background = "rgba(212,175,55,0.08)";
             e.target.style.borderColor = "rgba(212,175,55,0.25)";
-            e.target.style.transform = "scale(1)";
           }}
         >
           <div style={S.menuLinkContent}>
@@ -390,6 +413,30 @@ export default function Login() {
             <div>
               <div style={S.menuLinkTitle}>Premium Menyuni Ko'rish</div>
               <div style={S.menuLinkSub}>Parolsiz · Barcha mehmonlar uchun</div>
+            </div>
+            <span style={S.menuLinkArrow}>→</span>
+          </div>
+        </Link>
+
+        {/* ─── Nook Menu Link ────────────────────────────────────────────── */}
+        <Link
+          to="/nook"
+          className="menu-link-item"
+          style={S.menuLink}
+          onMouseEnter={(e) => {
+            e.target.style.background = "rgba(212,175,55,0.2)";
+            e.target.style.borderColor = "rgba(212,175,55,0.5)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = "rgba(212,175,55,0.08)";
+            e.target.style.borderColor = "rgba(212,175,55,0.25)";
+          }}
+        >
+          <div style={S.menuLinkContent}>
+            <span style={S.menuLinkIcon}>📖</span>
+            <div>
+              <div style={S.menuLinkTitle}>Nook Menu Kitobi</div>
+              <div style={S.menuLinkSub}>Parolsiz · Premium burgerlar</div>
             </div>
             <span style={S.menuLinkArrow}>→</span>
           </div>
@@ -481,7 +528,7 @@ const S = {
   menuDivider: {
     display: "flex",
     alignItems: "center",
-    margin: "16px 0 14px",
+    margin: "12px 0 14px",
     gap: 12,
   },
   menuDividerText: {
@@ -499,7 +546,7 @@ const S = {
     padding: "12px 16px",
     textDecoration: "none",
     transition: "all 0.3s ease",
-    marginBottom: "20px",
+    marginBottom: "10px",
     position: "relative",
     overflow: "hidden",
   },
