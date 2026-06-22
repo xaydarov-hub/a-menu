@@ -9,18 +9,17 @@ export default defineConfig({
     sourcemap: false,
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom'],
-          firebase: ['firebase/app', 'firebase/database']
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) return 'react-vendor'
+            if (id.includes('firebase')) return 'firebase'
+            return 'vendor'
+          }
         }
       }
     }
   },
   server: {
-    port: 3000,
-    open: true
-  },
-  preview: {
     port: 3000
   }
 })
